@@ -1,0 +1,9 @@
+# 1. Install dependencies
+cd backend && npm install
+
+# 2. Edit .env — set your MONGO_URI and JWT_SECRET
+
+# 3. Start the backend
+npm run dev
+
+# 4. Open frontend/index.html with VS Code Live Server

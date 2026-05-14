@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroFlash — Memory Pattern Game</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">NEURO<span>FLASH</span></div>
+    <div class="tagline">Memory Pattern Recognition System</div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen" class="screen active">
+    <div class="rules">
+      <h3>// How It Works</h3>
+      <div class="rule-item"><span>01</span><span>Watch the grid as cells light up in sequence — remember the order.</span></div>
+      <div class="rule-item"><span>02</span><span>When it's your turn, tap/click the cells in the exact same order.</span></div>
+      <div class="rule-item"><span>03</span><span>Each correct round adds one more step to the sequence.</span></div>
+      <div class="rule-item"><span>04</span><span>The grid grows larger at higher levels — harder, faster, deeper.</span></div>
+      <div class="rule-item"><span>05</span><span>Three lives. Don't waste them.</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="startGame()">START SESSION</button>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="stats-bar">
+      <div class="stat-card" id="scoreCard">
+        <div class="stat-label">Score</div>
+        <div class="stat-value" id="scoreDisplay">0</div>
+      </div>
+
+      <div class="stat-card highlight">
+        <div class="stat-label">Level</div>
+        <div class="stat-value" id="levelDisplay" style="color:var(--accent3)">1</div>
+      </div>
+
+      <div class="stat-card" id="livesCard">
+        <div class="stat-label">Lives</div>
+        <div class="stat-value" id="livesDisplay">❤️❤️❤️</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Best</div>
+        <div class="stat-value" id="bestDisplay" style="color:var(--accent4)">0</div>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <div class="level-badge">SEQ LENGTH: <strong id="seqLenDisplay">1</strong></div>
+      <div class="phase-indicator" id="phaseDisplay">READY</div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div class="sequence-display" id="sequenceDots"></div>
+
+    <div class="grid size-4" id="gameGrid"></div>
+
+    <div class="message info" id="messageDisplay">Get ready...</div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="quitGame()" style="font-size:0.7rem;padding:10px 20px">
+        QUIT
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME OVER SCREEN -->
+  <div id="gameover-screen" class="screen">
+    <div class="message" id="goMessage" style="font-size:1.4rem">GAME OVER</div>
+    <div class="score-final" id="goScore">0</div>
+    <div class="score-breakdown" id="goBreakdown"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="startGame()">PLAY AGAIN</button>
+      <button class="btn btn-outline" onclick="showStart()">MENU</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

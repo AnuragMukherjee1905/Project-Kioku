@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeuroFlash — Memory Pattern Game</title>
+  <title>Project Kioku — Memory Pattern Game</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -12,11 +12,92 @@
 
 <div class="flash-overlay" id="flashOverlay"></div>
 
-<div class="container">
-  <div class="header">
-    <div class="logo">NEURO<span>FLASH</span></div>
-    <div class="tagline">Memory Pattern Recognition System</div>
+<!-- ============================================================
+     AUTH MODAL  (Login / Register)
+     Sits above everything. Hidden by default.
+============================================================ -->
+<div class="modal-backdrop" id="authBackdrop">
+  <div class="modal" id="authModal">
+    <div class="modal-header">
+      <div class="modal-logo">PROJECT <span>KIOKU</span></div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tabLogin"  onclick="switchAuthTab('login')">LOGIN</button>
+        <button class="modal-tab"        id="tabSignup" onclick="switchAuthTab('signup')">SIGN UP</button>
+      </div>
+    </div>
+
+    <!-- Error / success message inside modal -->
+    <div class="modal-alert" id="authAlert"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm" class="auth-form">
+      <div class="field-group">
+        <label class="field-label">EMAIL</label>
+        <input class="field-input" type="email" id="loginEmail" placeholder="agent@kioku.io" autocomplete="email">
+      </div>
+      <div class="field-group">
+        <label class="field-label">PASSWORD</label>
+        <input class="field-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-full" id="loginBtn" onclick="handleLogin()">
+        <span id="loginBtnText">JACK IN</span>
+        <span class="btn-spinner hidden" id="loginSpinner"></span>
+      </button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signupForm" class="auth-form hidden">
+      <div class="field-group">
+        <label class="field-label">USERNAME</label>
+        <input class="field-input" type="text" id="signupUsername" placeholder="YourCallsign" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label class="field-label">EMAIL</label>
+        <input class="field-input" type="email" id="signupEmail" placeholder="agent@projectkioku.io" autocomplete="email">
+      </div>
+      <div class="field-group">
+        <label class="field-label">PASSWORD</label>
+        <input class="field-input" type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password">
+      </div>
+      <button class="btn btn-primary btn-full" id="signupBtn" onclick="handleSignup()">
+        <span id="signupBtnText">CREATE AGENT</span>
+        <span class="btn-spinner hidden" id="signupSpinner"></span>
+      </button>
+    </div>
+
+    <!-- Guest / skip option -->
+    <div class="modal-footer">
+      <button class="link-btn" onclick="playAsGuest()">Continue as guest (no leaderboard)</button>
+    </div>
   </div>
+</div>
+
+<!-- ============================================================
+     MAIN APP
+============================================================ -->
+<div class="container">
+
+  <!-- ---- TOP NAV BAR (shown when logged in) ---- -->
+  <div class="nav-bar" id="navBar" style="display:none">
+    <div class="nav-user">
+      <span class="nav-dot"></span>
+      <span id="navUsername">---</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="showScreen('leaderboard')">BOARD</button>
+      <button class="nav-btn" onclick="showScreen('profile')">PROFILE</button>
+      <button class="nav-btn nav-btn-logout" onclick="handleLogout()">LOGOUT</button>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="logo">PROJECT<span>KIOKU</span></div>
+    <div class="tagline">Neural Memory Synchronization System</div>
+  </div>
+
+  <!-- ============================================================
+       EXISTING SCREENS (untouched)
+  ============================================================ -->
 
   <!-- START SCREEN -->
   <div id="start-screen" class="screen active">
@@ -74,9 +155,7 @@
     <div class="message info" id="messageDisplay">Get ready...</div>
 
     <div class="btn-row">
-      <button class="btn btn-outline" onclick="quitGame()" style="font-size:0.7rem;padding:10px 20px">
-        QUIT
-      </button>
+      <button class="btn btn-outline" onclick="quitGame()" style="font-size:0.7rem;padding:10px 20px">QUIT</button>
     </div>
   </div>
 
@@ -86,12 +165,74 @@
     <div class="score-final" id="goScore">0</div>
     <div class="score-breakdown" id="goBreakdown"></div>
 
+    <!-- NEW: backend result card — shown only when logged in -->
+    <div class="backend-result" id="backendResult" style="display:none"></div>
+
     <div class="btn-row">
       <button class="btn btn-primary" onclick="startGame()">PLAY AGAIN</button>
       <button class="btn btn-outline" onclick="showStart()">MENU</button>
     </div>
   </div>
-</div>
+
+  <!-- ============================================================
+       NEW SCREENS
+  ============================================================ -->
+
+  <!-- LEADERBOARD SCREEN -->
+  <div id="leaderboard-screen" class="screen">
+    <div class="screen-title">// GLOBAL LEADERBOARD</div>
+    <div class="lb-table-wrap">
+      <div class="lb-loading" id="lbLoading">
+        <div class="spinner"></div>
+        <span>FETCHING NEURAL RANKINGS...</span>
+      </div>
+      <table class="lb-table" id="lbTable" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>AGENT</th>
+            <th>BEST SCORE</th>
+            <th>TOP LEVEL</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="showScreen('start')">← BACK</button>
+    </div>
+  </div>
+
+  <!-- PROFILE SCREEN -->
+  <div id="profile-screen" class="screen">
+    <div class="screen-title">// PLAYER PROFILE</div>
+
+    <div class="profile-loading" id="profileLoading">
+      <div class="spinner"></div>
+      <span>LOADING AGENT DATA...</span>
+    </div>
+
+    <div class="profile-card" id="profileCard" style="display:none">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">?</div>
+        <div class="profile-name" id="profileName">---</div>
+        <div class="profile-since" id="profileSince">---</div>
+      </div>
+      <div class="profile-stats" id="profileStats"></div>
+    </div>
+
+    <!-- SESSION HISTORY -->
+    <div class="screen-title" style="margin-top:8px">// SESSION HISTORY</div>
+    <div class="history-wrap" id="historyWrap">
+      <div class="spinner-small"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="showScreen('start')">← BACK</button>
+    </div>
+  </div>
+
+</div><!-- /container -->
 
 <script src="script.js"></script>
 </body>
