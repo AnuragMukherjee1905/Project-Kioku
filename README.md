@@ -253,21 +253,6 @@ The project also focuses heavily on code readability and modular structure to ma
 
 ---
 
-## Future Improvements
-
-Possible future additions:
-- multiplayer support
-- difficulty presets
-- sound system
-- profile avatars
-- achievements system
-- WebSocket real-time leaderboard
-- deployment with Render/Vercel
-- mobile optimization
-- refresh token authentication
-
----
-
 
 ## Author
 
